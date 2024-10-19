@@ -17,22 +17,6 @@ grabBtn.addEventListener("click",() => {
     })
 })
 
-/**
- * Выполняет функцию grabImages() на веб-странице указанной
- * вкладки и во всех ее фреймах,
- * @param tab {Tab} Объект вкладки браузера
- */
-function execScript(tab) {
-    // Выполнить функцию на странице указанной вкладки
-    // и передать результат ее выполнения в функцию onResult
-    chrome.scripting.executeScript(
-        {
-            target:{tabId: tab.id, allFrames: true},
-            func:grabImages
-        },
-        onResult
-    )
-}
 
 /**
  * Получает список абсолютных путей всех картинок
@@ -62,12 +46,12 @@ function onResult(frames) {
     }
     // Объединить списки URL из каждого фрейма в один массив
     const imageUrls = frames.map(frame=>frame.result).reduce((r1,r2)=>r1.concat(r2));
-    // alert(JSON.stringify(imageUrls));
+    alert(JSON.stringify(imageUrls));
     // Скопировать в буфер обмена полученный массив  
     // объединив его в строку, используя возврат каретки 
     // как разделитель  
     window.navigator.clipboard
-          .writeText(imageUrls.join("\n"))
+          .writeText(imageUrls)
           .then(()=>{
              // закрыть окно расширения после 
              // завершения
