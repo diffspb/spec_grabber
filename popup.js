@@ -29,6 +29,15 @@ function grabImages() {
     return str;
 }
 
+function extractSpecs(text) {
+    const regexp = /(sl...)/gi;
+    const array = [...text.matchAll(regexp)];
+    const result = array.map((x) => x[0]);
+    console.log(result);
+    alert(JSON.stringify(result));
+    return result;
+}
+
 /**
  * Выполняется после того как вызовы grabImages 
  * выполнены во всех фреймах удаленной web-страницы.
@@ -50,6 +59,7 @@ function onResult(frames) {
     // Скопировать в буфер обмена полученный массив  
     // объединив его в строку, используя возврат каретки 
     // как разделитель  
+    extractSpecs(imageUrls);
     window.navigator.clipboard
           .writeText(imageUrls)
           .then(()=>{
