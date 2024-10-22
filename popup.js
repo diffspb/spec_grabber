@@ -1,6 +1,5 @@
-const grabBtn = document.getElementById("grabBtn");
 
-grabBtn.addEventListener("click",() => {    
+function ejection() {
     chrome.tabs.query({active: true}, function(tabs) {
         var tab = tabs[0];
         if (tab) {
@@ -14,9 +13,10 @@ grabBtn.addEventListener("click",() => {
         } else {
             alert("There are no active tabs")
         }
-    })
-})
+    })  
+}
 
+ejection()
 
 /**
  * Получает список абсолютных путей всех картинок
@@ -30,12 +30,16 @@ function grabImages() {
 }
 
 function extractSpecs(text) {
-    const regexp = /(sl...)/gi;
+    const toRemove = ["SLOT1", "SLOT2", "SLOTA"];
+    const regexp = /(sl\w\w\w)/gi;
     const array = [...text.matchAll(regexp)];
     const result = array.map((x) => x[0]);
-    console.log(result);
-    alert(JSON.stringify(result));
-    return result;
+    // console.log(result);
+    // alert(JSON.stringify(result));
+    const filtered_result = result.filter( function( el ) {
+        return !toRemove.includes( el.toUpperCase() );
+      } );
+    return filtered_result;
 }
 
 /**
@@ -55,16 +59,11 @@ function onResult(frames) {
     }
     // Объединить списки URL из каждого фрейма в один массив
     const imageUrls = frames.map(frame=>frame.result).reduce((r1,r2)=>r1.concat(r2));
-    alert(JSON.stringify(imageUrls));
+    // alert(JSON.stringify(imageUrls));
     // Скопировать в буфер обмена полученный массив  
     // объединив его в строку, используя возврат каретки 
     // как разделитель  
-    extractSpecs(imageUrls);
-    window.navigator.clipboard
-          .writeText(imageUrls)
-          .then(()=>{
-             // закрыть окно расширения после 
-             // завершения
-             window.close();
-          });
+    specs = extractSpecs(imageUrls);
+    document.getElementById("spec-list").innerHTML = JSON.stringify(specs);
+    window.navigator.clipboard.writeText(specs.join("\n"));
 }
